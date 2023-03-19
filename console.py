@@ -13,6 +13,14 @@ from models.amenity import Amenity
 from models.review import Review
 
 
+# 1. It first checks if there are any curly braces in the string.
+# If there are, it returns the string up to the curly braces.
+
+# 2. If there are no curly braces, it checks if there are any brackets.
+# If there are, it returns the string up to the brackets.
+
+# 3. If there are no curly braces or brackets,
+# it splits the string on commas and returns the resulting list.
 def parse(arg):
     curly_braces = re.search(r"\{(.*?)\}", arg)
     brackets = re.search(r"\[(.*?)\]", arg)
@@ -52,6 +60,7 @@ class HBNBCommand(cmd.Cmd):
         """Do nothing upon receiving an empty line."""
         pass
 
+    # The above code is a function that is used to handle the default behavior of the cmd module when input is invalid.
     def default(self, arg):
         """Default behavior for cmd module when input is invalid"""
         argdict = {
@@ -82,6 +91,7 @@ class HBNBCommand(cmd.Cmd):
         print("")
         return True
 
+    # The above code creates a new instance of the class and prints its id.
     def do_create(self, arg):
         """Usage: create <class>
         Create a new class instance and print its id.
@@ -145,6 +155,7 @@ class HBNBCommand(cmd.Cmd):
                     objl.append(obj.__str__())
             print(objl)
 
+    # It counts the number of instances of a given class.
     def do_count(self, arg):
         """Usage: count <class> or <class>.count()
         Retrieve the number of instances of a given class."""
