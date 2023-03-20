@@ -2,11 +2,31 @@
 """BaseModel that defines all common attributes/methods for other classes"""
 import uuid
 from datetime import datetime
-import models
+from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy import Column, String, DATETIME
+from models import storage_type
+
+Base = declarative_base()
 
 
 class BaseModel:
-    """basemodel class"""
+     """A base class for all hbnb models
+    Attributes:
+        id (sqlalchemy String): The BaseModel id.
+        created_at (sqlalchemy DateTime): The datetime at creation.
+        updated_at (sqlalchemy DateTime): The datetime of last update.
+    """
+    id = Column(String(60),
+                nullable=False,
+                primary_key=True,
+                unique=True)
+    created_at = Column(DATETIME,
+                        nullable=False,
+                        default=datetime.utcnow())
+    updated_at = Column(DATETIME,
+                        nullable=False,
+                        default=datetime.utcnow())
+
     def __init__(self, *args, **kwargs):
         """initializes class"""
         if kwargs:
@@ -19,7 +39,7 @@ class BaseModel:
             self.id = str(uuid.uuid4())
             self.created_at = datetime.now()
             self.updated_at = self.created_at
-            models.storage.new(self)
+
 
     def __str__(self):
         """string representation of base model"""
@@ -31,14 +51,24 @@ class BaseModel:
         return self.__str__()
 
     def save(self):
-        """saves the class"""
+        """Updates updated_at with current time when instance is changed"""
+        from models import storage
         self.updated_at = datetime.now()
-        models.storage.save()
+        storage.new(self)
+        storage.save()
 
     def to_dict(self):
-        """gives a dict of object"""
-        copy = dict(self.__dict__)
-        copy['__class__'] = str(self.__class__.__name__)
-        copy['created_at'] = self.created_at.isoformat()
-        copy['updated_at'] = self.updated_at.isoformat()
-        return copy
+        """Convert instance into dict format"""
+        dct = self.__dict__.copy()
+        dct['__class__'] = self.__class__.__name__
+        for k in dct:
+            if type(dct[k]) is datetime:
+                dct[k] = dct[k].isoformat()
+        if '_sa_instance_state' in dct.keys():
+            del(dct['_sa_instance_state'])
+        return dct
+
+    def delete(self):
+        '''deletes the current instance from the storage'''
+        from models import storage
+        storage.delete(self)
