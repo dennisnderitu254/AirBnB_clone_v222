@@ -12,7 +12,7 @@ from models.place import Place
 from models.amenity import Amenity
 from models.review import Review
 
-
+# FUNCTIONALITY
 # 1. It first checks if there are any curly braces in the string.
 # If there are, it returns the string up to the curly braces.
 
@@ -21,6 +21,8 @@ from models.review import Review
 
 # 3. If there are no curly braces or brackets,
 # it splits the string on commas and returns the resulting list.
+
+
 def parse(arg):
     curly_braces = re.search(r"\{(.*?)\}", arg)
     brackets = re.search(r"\[(.*?)\]", arg)
@@ -47,13 +49,13 @@ class HBNBCommand(cmd.Cmd):
 
     prompt = "(hbnb) "
     __classes = {
-        "BaseModel",
-        "User",
-        "State",
-        "City",
-        "Place",
-        "Amenity",
-        "Review"
+        "BaseModel": BaseModel,
+        "User": User,
+        "State": State,
+        "City": City,
+        "Place": Place,
+        "Amenity": Amenity,
+        "Review": Review
     }
 
     def emptyline(self):
@@ -93,17 +95,65 @@ class HBNBCommand(cmd.Cmd):
 
     # The above code creates a new instance of the class and prints its id.
     def do_create(self, arg):
-        """Usage: create <class>
-        Create a new class instance and print its id.
+        """Usage: create <class name> <param 1> <param 2> <param 3>...
+        Create a new class with the given parameters and print its id.
+
+        FUNCTIONALITY
+
+        This version uses the parse function to split the command line into a
+        list of arguments.
+        The first argument is the class name, and the rest are the parameters.
+
+        The method then checks if the class exists
+        creates an empty dictionary to hold the keyword arguments
+        for the object constructor,
+        and iterates over the parameters. For each parameter,
+        it checks if it has the form key=value. If it does not,
+        the parameter is skipped.
+
+        If the value starts and ends with double quotes,
+        it is assumed to be a string and is converted to the corresponding
+        Python string after replacing
+        all underscores with spaces and unescaping any escaped double quotes.
+        If the value contains a dot, it is assumed to be a float and is
+        converted to the corresponding Python float.
+        Otherwise, it is assumed to be an integer and is converted to the
+        corresponding Python integer.
+
+        Finally, the method creates an instance of the class with the given
+        keyword arguments,
+        saves it to the storage, and prints its id.
         """
         argl = parse(arg)
         if len(argl) == 0:
             print("** class name missing **")
-        elif argl[0] not in HBNBCommand.__classes:
+            return
+        class_name = argl[0]
+        if class_name not in HBNBCommand.__classes:
             print("** class doesn't exist **")
-        else:
-            print(eval(argl[0])().id)
-            storage.save()
+            return
+        cls = HBNBCommand.__classes[class_name]
+        kwargs = {}
+        for param in argl[1:]:
+            if '=' not in param:
+                continue
+            key, value = param.split('=', 1)
+            if value.startswith('"') and value.endswith('"'):
+                value = value[1:-1].replace('_', ' ').replace('\\"', '"')
+            elif '.' in value:
+                try:
+                    value = float(value)
+                except ValueError:
+                    continue
+            else:
+                try:
+                    value = int(value)
+                except ValueError:
+                    continue
+            kwargs[key] = value
+            obj = cls(**kwargs)
+            obj.save()
+            print(obj.id)
 
     def do_show(self, arg):
         """Usage: show <class> <id> or <class>.show(<id>)
