@@ -4,22 +4,21 @@ import cmd
 import sys
 import re
 import os
-import ast
-from shlex import split
-import shlex
 from datetime import datetime
 import uuid
-from models.base_model import BaseModel
 from models import storage
+from models.base_model import BaseModel
 from models.user import User
 from models.state import State
 from models.city import City
 from models.amenity import Amenity
 from models.place import Place
 from models.review import Review
+# import shlex  # for splitting the line along spaces except in double quotes
 
 
 class HBNBCommand(cmd.Cmd):
+    """ HBNH console """
     prompt = '(hbnb) '
     classes = {'BaseModel': BaseModel, 'User': User, 'Place': Place,
                'State': State, 'City': City, 'Amenity': Amenity,

@@ -11,10 +11,11 @@ from models.review import Review
 from models.state import State
 from models.user import User
 from os import getenv
+from models.place import Place
 
 
-if getenv('HBNB_TYPE_STORAGE') == 'db':
-    from models.place import place_amenity
+# if getenv('HBNB_TYPE_STORAGE') == 'db':
+#     from models.place import Place
 
 classes = {"User": User, "State": State, "City": City,
            "Amenity": Amenity, "Place": Place, "Review": Review}
