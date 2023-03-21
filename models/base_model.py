@@ -11,13 +11,13 @@ Base = declarative_base()
 
 class BaseModel:
     """A base class for all hbnb models
-        20eeb4dcd0226543e164307
     Attributes:
         id (sqlalchemy String): The BaseModel id.
         created_at (sqlalchemy DateTime): The datetime at creation.
         updated_at (sqlalchemy DateTime): The datetime of last update.
     """
-    id = Column(String(60), nullable=False,
+    id = Column(String(60),
+                nullable=False,
                 primary_key=True,
                 unique=True)
     created_at = Column(DATETIME,
