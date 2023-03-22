@@ -38,65 +38,37 @@ class HBNBCommand(cmd.Cmd):
         """Quit command to exit the program at end of file"""
         return True
 
-    def do_create(self, args):
+    def do_create(self, arg):
         """ Create an object of any class"""
-        ignored_attrs = ('id', 'created_at', 'updated_at', '__class__')
-        class_name = ''
-        name_pattern = r'(?P<name>(?:[a-zA-Z]|_)(?:[a-zA-Z]|\d|_)*)'
-        class_match = re.match(name_pattern, args)
-        obj_kwargs = {}
-        if class_match is not None:
-            class_name = class_match.group('name')
-            params_str = args[len(class_name):].strip()
-            params = params_str.split(' ')
-            str_pattern = r'(?P<t_str>"([^"]|\")*")'
-            float_pattern = r'(?P<t_float>[-+]?\d+\.\d+)'
-            int_pattern = r'(?P<t_int>[-+]?\d+)'
-            param_pattern = '{}=({}|{}|{})'.format(
-                name_pattern,
-                str_pattern,
-                float_pattern,
-                int_pattern
-            )
-
-            for param in params:
-                param_match = re.fullmatch(param_pattern, param)
-                if param_match is not None:
-                    key_name = param_match.group('name')
-                    str_v = param_match.group('t_str')
-                    float_v = param_match.group('t_float')
-                    int_v = param_match.group('t_int')
-                    if float_v is not None:
-                        obj_kwargs[key_name] = float(float_v)
-                    if int_v is not None:
-                        obj_kwargs[key_name] = int(int_v)
-                    if str_v is not None:
-                        obj_kwargs[key_name] = str_v[1:-1].replace('_', ' ')
-        else:
-            class_name = args
-        if not class_name:
+        if not arg:
             print("** class name missing **")
             return
-        elif class_name not in HBNBCommand.classes:
+        args = arg.split()
+        if args[0] not in HBNBCommand.classes:
             print("** class doesn't exist **")
             return
-        if os.getenv('HBNB_TYPE_STORAGE') == 'db':
-            if not hasattr(obj_kwargs, 'id'):
-                obj_kwargs['id'] = str(uuid.uuid4())
-            if not hasattr(obj_kwargs, 'created_at'):
-                obj_kwargs['created_at'] = str(datetime.now())
-            if not hasattr(obj_kwargs, 'updated_at'):
-                obj_kwargs['updated_at'] = str(datetime.now())
-            new_instance = HBNBCommand.classes[class_name](**obj_kwargs)
-            new_instance.save()
-            print(new_instance.id)
-        else:
-            new_instance = HBNBCommand.classes[class_name]()
-            for key, value in obj_kwargs.items():
-                if key not in ignored_attrs:
-                    setattr(new_instance, key, value)
-            new_instance.save()
-            print(new_instance.id)
+        new_instance = HBNBCommand.classes[args[0]]()
+        for arg in args[1:]:
+            key_value = arg.split('=')
+            if len(key_value) != 2:
+                continue
+            key, value = key_value
+            if value.startswith('"') and value.endswith('"'):
+                value = value[1:-1].replace('_', ' ').replace('\\"', '"')
+            elif '.' in value:
+                try:
+                    value = float(value)
+                except ValueError:
+                    continue
+            else:
+                try:
+                    value = int(value)
+                except ValueError:
+                    continue
+            setattr(new_instance, key, value)
+        storage.save()
+        print(new_instance.id)
+        storage.save()
 
     def do_destroy(self, line):
         """Deletes an instance based on the class name and id
@@ -144,7 +116,7 @@ class HBNBCommand(cmd.Cmd):
             return
         try:
             args = line.split(" ")
-            if args[0] not in self.all_classes:
+            if args[0] not in self.classes:
                 raise NameError()
             for key in objects:
                 name = key.split('.')
