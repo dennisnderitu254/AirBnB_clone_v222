@@ -1,58 +1,29 @@
 #!/usr/bin/python3
-"""Tests city"""
-import unittest
-import pep8
-import os
+""" """
+from tests.test_models.test_base_model import test_basemodel
 from models.city import City
-from models.base_model import BaseModel
+import os
 
 
-class TestCity(unittest.TestCase):
-    """unittests for basemodel"""
+class test_City(test_basemodel):
+    """ tests for city """
 
-    @classmethod
-    def setUp(cls):
-        """creates class"""
-        cls.testCity = City()
-        cls.testCity.name = "test"
-        cls.testCity.state_id = "T"
+    def __init__(self, *args, **kwargs):
+        """ init the test class"""
+        super().__init__(*args, **kwargs)
+        self.name = "City"
+        self.value = City
 
-    @classmethod
-    def tearDown(cls):
-        """deletes test class"""
-        del cls.testCity
-        try:
-            os.remove("file.json")
-        except FileNotFoundError:
-            pass
+    def test_state_id(self):
+        """ testing state_id type """
+        new = self.value()
+        self.assertEqual(type(new.state_id), str if
+                         os.getenv('HBNB_TYPE_STORAGE') != 'db' else
+                         type(None))
 
-    def test_pep8_city(self):
-        """tests pep8"""
-        style = pep8.StyleGuide(quiet=True)
-        p = style.check_files(['models/city.py'])
-        self.assertEqual(p.total_errors, 0, "fix pep8")
-
-    def test_docstrings_city(self):
-        """tests docstrings"""
-        self.assertTrue(len(City.__doc__) > 0)
-        for func in dir(City):
-            self.assertTrue(len(func.__doc__) > 0)
-
-    def test_init_and_class_variables_city(self):
-        """tests init and class variables"""
-        self.assertTrue(isinstance(self.testCity, City))
-        self.assertTrue(issubclass(type(self.testCity), BaseModel))
-        self.assertTrue(self.testCity.name == "test")
-        self.assertTrue(self.testCity.state_id == "T")
-        self.assertIsNotNone(self.testCity.id)
-        self.assertIsNotNone(self.testCity.updated_at)
-        self.assertIsNotNone(self.testCity.created_at)
-
-    def test_save_city(self):
-        self.testCity.save()
-        self.assertTrue(self.testCity.updated_at != self.testCity.created_at)
-
-
-if __name__ == '__main__':
-    unittest.main()
-
+    def test_name(self):
+        """ testing name type"""
+        new = self.value()
+        self.assertEqual(type(new.name), str if
+                         os.getenv('HBNB_TYPE_STORAGE') != 'db' else
+                         type(None))
