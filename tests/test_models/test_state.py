@@ -1,68 +1,22 @@
 #!/usr/bin/python3
-"""tests for class state"""
-import unittest
-import os
+""" """
+from tests.test_models.test_base_model import test_basemodel
 from models.state import State
-from models.base_model import BaseModel
-import pep8
+import os
 
 
-class TestState(unittest.TestCase):
-    """test state class"""
+class test_state(test_basemodel):
+    """ states test class"""
 
-    @classmethod
-    def setUpClass(cls):
-        """set up functions"""
-        cls.state = State()
-        cls.state.name = "CA"
+    def __init__(self, *args, **kwargs):
+        """ state test class init"""
+        super().__init__(*args, **kwargs)
+        self.name = "State"
+        self.value = State
 
-    @classmethod
-    def teardown(cls):
-        """teardown after functions"""
-        del cls.state
-
-    def tearDown(self):
-        """teardown"""
-        try:
-            os.remove("file.json")
-        except:
-            pass
-
-    def test_pep8_stat(self):
-        """checks for pep8"""
-        style = pep8.StyleGuide(quiet=True)
-        p = style.check_files(['models/state.py'])
-        self.assertEqual(p.total_errors, 0, "fix pep8")
-
-    def test_docstring_stat(self):
-        """test for docstring"""
-        self.assertIsNotNone(State.__doc__)
-
-    def test_attr_stat(self):
-        """test for existance of keys"""
-        self.assertTrue('id' in self.state.__dict__)
-        self.assertTrue('created_at' in self.state.__dict__)
-        self.assertTrue('updated_at' in self.state.__dict__)
-        self.assertTrue('name' in self.state.__dict__)
-
-    def test_inheritance_stat(self):
-        """test inheritance"""
-        self.assertTrue(issubclass(self.state.__class__, BaseModel), True)
-
-    def test_attrtype_stat(self):
-        """test attribute type"""
-        self.assertEqual(type(self.state.name), str)
-
-    def test_save(self):
-        """test save function"""
-        self.state.save()
-        self.assertNotEqual(self.state.created_at, self.state.updated_at)
-
-    def test_to_dict(self):
-        """test dictionary function"""
-        self.assertEqual('to_dict' in dir(self.state), True)
-
-
-if __name__ == "__main__":
-    unittest.main()
-
+    def test_name3(self):
+        """ testing state name attr"""
+        new = self.value()
+        self.assertEqual(type(new.name), str if
+                         os.getenv('HBNB_TYPE_STORAGE') != 'db' else
+                         type(None))
