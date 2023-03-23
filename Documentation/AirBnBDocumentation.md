@@ -74,6 +74,10 @@ SELECT id, name FROM students WHERE batch_id = 3 ORDER BY created_at DESC LIMIT 
 $
 ```
 
+<p align="center">
+  <img src="img/hbnb_step2.png alt="HolbertonBnB logo">
+</p>
+
 ### Tasks
 
 #### 0. Fork me if you can
