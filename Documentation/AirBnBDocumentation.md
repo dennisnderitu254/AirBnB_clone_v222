@@ -363,3 +363,29 @@ Update `BaseModel`: (`models/base_model.py`)
 - Update the `to_dict()` method of the class `BaseModel`:
 remove the key `_sa_instance_state` from the dictionary returned by this method **only if this key exists**
 - Add a new public instance method: `def delete(self):` to delete the current instance from the storage (`models.storage`) by calling the method `delete`
+
+Update City: (`models/city.py`)
+
+- `City` inherits from `BaseModel` and `Base` (respect the order)
+- Add or replace in the class `City`:
+  - class attribute `**tablename**` -
+    - represents the table name, `cities`
+  - class attribute `name`
+    - represents a column containing a string (128 characters)
+    - can’t be null
+  - class attribute `state_id`
+    - represents a column containing a string (60 characters)
+    - can’t be null
+    - is a foreign key to `states.id`
+
+Update State: (models/state.py)
+
+- State inherits from BaseModel and Base (respect the order)
+- Add or replace in the class State:
+  - class attribute **tablename**
+    - represents the table name, states
+  - class attribute name
+    - represents a column containing a string (128 characters)
+    - can’t be null
+- for `DBStorage`: class attribute `cities` must represent a relationship with the class `City`. If the `State` object is deleted, all linked `City` objects must be automatically deleted. Also, the reference from a City object to his `State` should be named `state`
+- for `FileStorage`: getter attribute `cities` that returns the list of `City` instances with `state_id` equals to the current `State.id` => It will be the `FileStorage` relationship between `State` and `City`
