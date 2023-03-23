@@ -92,3 +92,17 @@ If you are the owner of this repository, please create a new repository named `A
 **Repo:**
 
 - GitHub repository: `AirBnB_clone_v2`
+
+## 1. Bug free
+
+Do you remember the `unittest` module?
+
+This codebase contains many test cases. Some are missing, but the ones included cover the basic functionality of the program.
+
+```
+guillaume@ubuntu:~/AirBnB_v2$ python3 -m unittest discover tests 2>&1 /dev/null | tail -n 1
+OK
+guillaume@ubuntu:~/AirBnB_v2$
+```
+
+All your unittests `must` pass without any errors at anytime in this project, `with each storage engine!`. Same for PEP8!
