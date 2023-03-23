@@ -1,7 +1,7 @@
 # AirBNB Clone Console - MySQL Documentation
 
 <p align="center">
-  <img src="img/front.png" alt="HolbertonBnB logo">
+  <img src="Documentation/front.png" alt="HolbertonBnB logo">
 </p>
 
 <h1 align="center">HolbertonBnB</h1>
@@ -75,7 +75,7 @@ $
 ```
 
 <p align="center">
-  <img src="img/hbnb_step2.png alt="HolbertonBnB logo">
+  <img src="Documentation/hbnb_step2.png alt="HolbertonBnB logo">
 </p>
 
 ### Tasks
